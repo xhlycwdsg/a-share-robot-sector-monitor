@@ -1,0 +1,179 @@
+app:
+  poll_interval_seconds: 180
+  fetch_retries: 3
+  fetch_retry_delay_seconds: 5
+  alert_state_file: data/alert_state.json
+  review_dir: reviews
+  market_open: "09:30"
+  market_close: "15:00"
+  midday_break_start: "11:30"
+  midday_break_end: "13:00"
+  timezone: Asia/Shanghai
+
+push:
+  provider: bark
+  bark:
+    # 不要把自己的 Bark key 提交到 GitHub。
+    # 可以复制本文件为 config.yaml 后填写，或设置环境变量 BARK_KEY。
+    key: ""
+    server: "https://api.day.app"
+  server_chan:
+    # Android/Windows 用户可用 Server酱，把 provider 改成 server_chan 后填写 SendKey。
+    key: ""
+
+stocks:
+  - code: "002196"
+    name: 方正电机
+    tags: [robot]
+  - code: "000559"
+    name: 万向钱潮
+    tags: [robot]
+  - code: "688017"
+    name: 绿的谐波
+    tags: [robot]
+  - code: "002050"
+    name: 三花智控
+    tags: [robot]
+  - code: "601689"
+    name: 拓普集团
+    tags: [robot]
+  - code: "002896"
+    name: 中大力德
+    tags: [robot]
+  - code: "603728"
+    name: 鸣志电器
+    tags: [robot]
+  - code: "000700"
+    name: 模塑科技
+    tags: [robot, high_standard]
+  - code: "002031"
+    name: 巨轮智能
+    tags: [robot, sentiment]
+  - code: "603662"
+    name: 柯力传感
+    tags: [robot]
+  - code: "300308"
+    name: 中际旭创
+    tags: [cpo]
+  - code: "300502"
+    name: 新易盛
+    tags: [cpo]
+  - code: "601138"
+    name: 工业富联
+    tags: [cpo, semiconductor]
+
+sectors:
+  robot:
+    name: 机器人概念
+    eastmoney_board_name: 机器人概念
+  cpo:
+    name: CPO概念
+    eastmoney_board_name: CPO概念
+  semiconductor:
+    name: 半导体
+    eastmoney_board_name: 半导体
+  sh_index:
+    name: 上证指数
+    index_code: "000001"
+
+rules:
+  founder_vs_robot:
+    enabled: true
+    stock_code: "002196"
+    benchmark: robot
+    outperform_pct: 2.2
+  wanxiang_vs_robot:
+    enabled: true
+    stock_code: "000559"
+    benchmark: robot
+    outperform_pct: 1.5
+  holding_underperform_robot:
+    enabled: true
+    stock_codes: ["002196", "000559"]
+    benchmark: robot
+    underperform_pct: 2.5
+    sector_min_pct: 0.8
+  pioneer_midfield_confirm:
+    enabled: true
+    pioneer_code: "002196"
+    midfield_code: "000559"
+    leader_code: "688017"
+    min_pioneer_pct: 3.0
+    min_midfield_pct: 1.2
+    min_leader_pct: 0.0
+    min_robot_pct: 0.8
+  robot_vs_sh_index:
+    enabled: true
+    sector: robot
+    benchmark: sh_index
+    outperform_pct: 1.5
+  robot_vs_hot_tech:
+    enabled: true
+    robot_sector: robot
+    competitor_sectors: [cpo, semiconductor]
+    outperform_pct: 1.0
+    min_robot_pct: 0.3
+  robot_up_cpo_semiconductor_down:
+    enabled: true
+    robot_sector: robot
+    weak_sectors: [cpo, semiconductor]
+  robot_pool_breadth:
+    enabled: true
+    tag: robot
+    min_positive_ratio: 0.62
+    min_avg_pct: 1.0
+    min_count: 5
+  intraday_fade:
+    enabled: true
+    stock_codes: ["002196", "000559", "688017", "000700"]
+    fade_from_high_pct: 4.0
+  abnormal_intraday_pullup:
+    enabled: true
+    stock_codes: ["002196", "000559", "688017", "002050", "601689", "002896", "603728", "000700", "002031", "603662", "300308", "300502", "601138"]
+    pull_from_low_pct: 3.2
+    min_current_pct: 0.5
+    max_low_pct: 1.0
+  deep_water_rebound:
+    enabled: true
+    stock_codes: ["002196", "000559", "688017", "000700"]
+    low_pct_chg_below: -2.8
+    rebound_from_low_pct: 3.5
+    min_current_pct: -0.5
+  founder_volume_spike:
+    enabled: true
+    stock_code: "002196"
+    amount_multiple: 1.6
+    lookback_days: 5
+  pool_volume_price_alert:
+    enabled: true
+    min_pct_chg: 2.5
+    amount_multiple: 1.6
+    lookback_days: 5
+  leader_limit_or_deep_drop:
+    enabled: true
+    stock_code: "688017"
+    limit_up_pct: 19.5
+    deep_drop_pct: -6.5
+  high_standard_negative_feedback:
+    enabled: true
+    stock_codes: ["000700"]
+    robot_sector: robot
+    stock_drop_pct: -5.0
+    robot_min_pct: 0.0
+  leader_anchor_negative:
+    enabled: true
+    stock_code: "688017"
+    robot_sector: robot
+    stock_drop_pct: -5.0
+    robot_min_pct: 0.0
+  profit_guard:
+    enabled: true
+    stock_codes: ["002196", "000559"]
+    min_current_pct: 3.0
+    fade_from_high_pct: 3.0
+  late_day_strength:
+    enabled: true
+    after_time: "14:30"
+    stock_codes: ["002196", "000559", "688017"]
+    min_stock_pct: 3.0
+    min_robot_pct: 1.0

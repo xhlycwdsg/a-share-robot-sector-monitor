@@ -237,6 +237,14 @@ app:
   poll_interval_seconds: 300
 ```
 
+如果免费行情接口偶发断开，可以调高重试次数或重试等待：
+
+```yaml
+app:
+  fetch_retries: 3
+  fetch_retry_delay_seconds: 5
+```
+
 把方正电机相对机器人板块强 3% 才提醒：
 
 ```yaml
@@ -290,4 +298,3 @@ stocks:
 - Android / 企业微信 / Telegram 推送
 - 收盘复盘模板
 - Docker、云服务器或 NAS 部署
-
